@@ -41,7 +41,6 @@ exports.update = async (req, res) => {
 exports.delete = async (req, res) => {
     try {
         const data = await service.delete(req.params.id);
-        if (!data) return res.status(404).json({ error: 'No encontrado' });
         res.json({ message: 'Eliminado correctamente' });
     } catch (error) {
         res.status(500).json({ error: error.message });
