@@ -6,6 +6,10 @@ const sequelize = require('./config/database')
 // Importar todos los modelos
 const Persona = require('./models/persona.models');
 const TipoPersona = require('./models/tipoPersona.models');
+const Articulo = require('./models/articulo.models');
+const Categoria = require('./models/categoria.models');
+const DetalleFactura = require('./models/detalleFactura.models');
+const Venta = require('./models/venta.models');
 
 app.use(express.json());
 
@@ -31,8 +35,16 @@ sequelize.sync().then(() => {
 // Importar rutas
 const personaRoutes = require('./routes/persona.routes');
 const tipoPersonaRoutes = require('./routes/tipoPersona.routes');
+const articuloRoutes = require('./routes/articulo.routes');
+const categoriaRoutes = require('./routes/categoria.routes');
+const detalleFacturaRoutes = require('./routes/detalleFactura.routes');
+const ventaRoutes = require('./routes/venta.routes');
 
 // Usar rutas
 app.use('/personas', personaRoutes);
 app.use('/tiposPersona', tipoPersonaRoutes);
+app.use('/articulos', articuloRoutes);
+app.use('/categorias', categoriaRoutes);
+app.use('/detalleFacturas', detalleFacturaRoutes);
+app.use('/ventas', ventaRoutes);
 
