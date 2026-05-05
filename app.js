@@ -3,6 +3,9 @@ const express = require('express');
 const app = express();
 const sequelize = require('./config/database')
 
+// Importar todos los modelos
+const Persona = require('./models/persona.models');
+const TipoPersona = require('./models/tipoPersona.models');
 
 app.use(express.json());
 
@@ -21,8 +24,15 @@ sequelize.sync().then(() => {
     app.listen(3000, () => {
         console.log('SQL Server ejecutando por la 3000');
     });
-});   
+}).catch(error => {
+    console.error('Error sincronizando la base de datos:', error);
+});
 
-const routes = require('./routes/persona.routes');
-app.use('/personas', routes);
+// Importar rutas
+const personaRoutes = require('./routes/persona.routes');
+const tipoPersonaRoutes = require('./routes/tipoPersona.routes');
+
+// Usar rutas
+app.use('/personas', personaRoutes);
+app.use('/tiposPersona', tipoPersonaRoutes);
 

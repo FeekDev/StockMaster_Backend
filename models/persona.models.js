@@ -5,7 +5,7 @@ const sequelize = require('../config/database');
 const TipoPersona = require('./tipoPersona.models');
 // Definimos el modelo de Usuario con sus campos y tipos de datos
 const Persona = sequelize.define('Persona', {
-    id: {
+    id_persona: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
@@ -34,6 +34,10 @@ const Persona = sequelize.define('Persona', {
             key: 'id_tipo'// Campo del modelo TipoPersona que se relaciona con id_tipo_usuario
         },
     },
+}, {
+    tableName: 'Persona',
+    freezeTableName: true,
+    timestamps: false
 });
 
 // Exportamos el modelo
