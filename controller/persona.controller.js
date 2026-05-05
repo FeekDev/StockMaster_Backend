@@ -43,7 +43,7 @@ exports.update = async (req, res) => {
 exports.delete = async (req, res) => {
     try {
         const data = await service.delete(req.params.id);
-        res.json(data);
+       res.json({message: 'Persona eliminada', data });
     } catch (error) {
         console.error('Error en delete:', error);
         res.status(500).json({ error: error.message });

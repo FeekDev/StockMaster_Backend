@@ -6,7 +6,7 @@ const Articulo = sequelize.define('Articulo', {
     codigo: {
         type: DataTypes.STRING(50),
         primaryKey: true,
-        allowNull: false,
+        allowNull: false
     },
     nombre: {
         type: DataTypes.STRING(150),
