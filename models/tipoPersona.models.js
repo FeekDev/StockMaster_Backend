@@ -15,6 +15,10 @@ const TipoPersona = sequelize.define('TipoPersona', {
         type: DataTypes.STRING(200),
         allowNull: true,
     },
+}, {
+    tableName: 'TipoPersona',
+    freezeTableName: true,
+    timestamps: false
 });
 
 module.exports = TipoPersona;
