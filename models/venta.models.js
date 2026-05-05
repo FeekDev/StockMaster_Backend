@@ -35,6 +35,10 @@ const Venta = sequelize.define('Venta', {
             key: 'id'
         },
     },
+}, {
+    tableName: 'Venta',
+    freezeTableName: true,
+    timestamps: false
 });
 
 module.exports = Venta;
