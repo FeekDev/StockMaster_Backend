@@ -22,3 +22,7 @@ sequelize.sync().then(() => {
         console.log('SQL Server ejecutando por la 3000');
     });
 });   
+
+const routes = require('./routes/persona.routes');
+app.use('/personas', routes);
+
