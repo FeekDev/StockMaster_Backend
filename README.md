@@ -70,22 +70,49 @@ npm run test-db
 ## 📁 Estructura del Proyecto
 
 ```
-stockmaster_backend/
+StockMaster_Backend/
 ├── config/
-│   └── database.js          # Configuración de conexión a BD
-├── controllers/             # Controladores de la aplicación
-├── middlewares/             # Middlewares personalizados
-├── models/                  # Modelos de Sequelize
+│   └── database.js              # Configuración de conexión a BD
+├── controller/                  # Controladores de la aplicación
+│   ├── articulo.controller.js
+│   ├── categoria.controller.js
+│   ├── detalleFactura.controller.js
+│   ├── persona.controller.js
+│   ├── tipoPersona.controller.js
+│   └── venta.controller.js
+├── middleware/                  # Middlewares personalizados
+│   ├── error.middleware.js      # Manejo centralizado de errores
+│   └── validate.middleware.js   # Validación de datos con Joi
+├── models/                      # Modelos de Sequelize
 │   ├── articulo.models.js
 │   ├── categoria.models.js
 │   ├── detalleFactura.models.js
+│   ├── persona.models.js
 │   ├── tipoPersona.models.js
-│   ├── usuario.models.js
 │   └── venta.models.js
-├── routes/                  # Definición de rutas
-├── services/                # Lógica de negocio
-├── utils/                   # Utilidades
-├── app.js                   # Archivo principal de la aplicación
+├── routes/                      # Definición de rutas
+│   ├── articulo.routes.js
+│   ├── categoria.routes.js
+│   ├── detalleFactura.routes.js
+│   ├── persona.routes.js
+│   ├── tipoPersona.routes.js
+│   └── venta.routes.js
+├── schemas/                     # Esquemas de validación (Joi)
+│   ├── articulo.schema.js
+│   ├── categoria.schema.js
+│   ├── detalleFactura.schema.js
+│   ├── persona.schema.js
+│   ├── tipoPersona.schema.js
+│   └── venta.schema.js
+├── services/                    # Lógica de negocio
+│   ├── articulo.services.js
+│   ├── categoria.services.js
+│   ├── detalleFactura.services.js
+│   ├── persona.services.js
+│   ├── tipoPersona.services.js
+│   └── venta.services.js
+├── utils/                       # Utilidades
+├── app.js                       # Archivo principal de la aplicación
 ├── package.json
 └── README.md
 ```
