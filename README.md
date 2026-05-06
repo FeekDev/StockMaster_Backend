@@ -39,8 +39,8 @@ Crea un archivo `.env` en la raíz del proyecto con las configuraciones de base 
 La aplicación está configurada para conectarse a SQL Server con los siguientes parámetros por defecto:
 - **Servidor**: localhost
 - **Base de datos**: STOCKMASTERbdv4
-- **Usuario**: sa
-- **Contraseña**: SQLS3rv3r*
+- **Usuario**: --configurado--
+- **Contraseña**: --establecida--
 - **Puerto**: 3000
 
 ### Variables de Entorno
