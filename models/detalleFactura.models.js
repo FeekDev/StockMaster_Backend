@@ -44,6 +44,10 @@ const DetalleFactura = sequelize.define('DetalleFactura', {
             key: 'codigo'
         },
     },
+}, {
+    tableName: 'DetalleFactura',
+    freezeTableName: true,
+    timestamps: false
 });
 
 module.exports = DetalleFactura;

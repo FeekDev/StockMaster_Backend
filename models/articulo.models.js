@@ -35,6 +35,10 @@ const Articulo = sequelize.define('Articulo', {
             key: 'id_categoria'
         },
     },
+}, {
+    tableName: 'Articulo',
+    freezeTableName: true,
+    timestamps: false    // ← importante: la tabla no tiene columnas createdAt/updatedAt
 });
 
 module.exports = Articulo;

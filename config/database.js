@@ -1,18 +1,16 @@
-// Punto de conexion a la base de datos
 const { Sequelize } = require('sequelize');
-// Variable de entorno para MSSQL
-const DB_TYPE = process.env.DB_TYPE
-// Inicialización sequelize
-let sequelize
-// Conexión a bd
-sequelize = new Sequelize('STOCKMASTERbdv4', 'sa', 'Yeffer1234', {
-    host: 'localhost',
-    dialect: 'mssql',
-    dialectOptions: {
-        options: {
-            encrypt: false
-        }
+require('dotenv').config();
+
+const sequelize = new Sequelize('STOCKMASTERbdv4', 'sa', 'Yeffer1234', {
+  host: 'localhost',
+  port: 1433,
+  dialect: 'mssql',
+  dialectOptions: {
+    options: {
+      encrypt: false,
+      trustServerCertificate: true
     }
+  }
 });
 
-module.exports = sequelize
+module.exports = sequelize;
