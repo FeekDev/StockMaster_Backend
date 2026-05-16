@@ -19,6 +19,11 @@ const categoriaRoutes = require('./routes/categoria.routes');
 const detalleFacturaRoutes = require('./routes/detalleFactura.routes');
 const ventaRoutes = require('./routes/venta.routes');
 const { errorMiddleware } = require('./middleware/error.middleware');
+const cors = require('cors');
+
+app.use(cors());
+
+
 
 // Middlewares
 app.use(express.json());
