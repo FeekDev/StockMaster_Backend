@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const sequelize = require('./config/database');
 
+
 // Importar modelos
 const Persona = require('./models/persona.models');
 const TipoPersona = require('./models/tipoPersona.models');
@@ -19,8 +20,9 @@ const categoriaRoutes = require('./routes/categoria.routes');
 const detalleFacturaRoutes = require('./routes/detalleFactura.routes');
 const ventaRoutes = require('./routes/venta.routes');
 const { errorMiddleware } = require('./middleware/error.middleware');
-const cors = require('cors');
 
+// Configurar CORS para permitir todas las solicitudes desde el frontend
+const cors = require('cors');
 app.use(cors());
 
 
