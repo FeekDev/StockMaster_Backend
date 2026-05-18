@@ -10,6 +10,7 @@ const Articulo = require('./models/articulo.models');
 const Categoria = require('./models/categoria.models');
 const DetalleFactura = require('./models/detalleFactura.models');
 const Venta = require('./models/venta.models');
+const Usuario = require('./models/usuario.models');
 
 app.use(express.json());
 
@@ -39,6 +40,7 @@ const articuloRoutes = require('./routes/articulo.routes');
 const categoriaRoutes = require('./routes/categoria.routes');
 const detalleFacturaRoutes = require('./routes/detalleFactura.routes');
 const ventaRoutes = require('./routes/venta.routes');
+const authRoutes = require('./routes/auth.routes');
 
 // Usar rutas
 app.use('/personas', personaRoutes);
@@ -47,4 +49,4 @@ app.use('/articulos', articuloRoutes);
 app.use('/categorias', categoriaRoutes);
 app.use('/detalleFacturas', detalleFacturaRoutes);
 app.use('/ventas', ventaRoutes);
-
+app.use('/api/auth', authRoutes);
