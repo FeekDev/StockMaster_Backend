@@ -1,6 +1,6 @@
 /**
  * Controlador de Autenticación (Auth Controller)
- * Ubicación: controller/auth.controllers.js
+ * Ubicación: controller/auth.controller.js
  * Descripción: Maneja las peticiones HTTP relacionadas con login y registro.
  * Valida los datos de entrada y coordina la respuesta usando el servicio de autenticación.
  * 
@@ -57,10 +57,13 @@ class AuthController {
             });
 
         } catch (error) {
-            console.error('Error en login:', error.message);
+            // ✅ Logging detallado para diagnóstico
+            console.error('❌ ERROR EN LOGIN:', error);
+            console.error('❌ Mensaje:', error.message);
+            
             res.status(401).json({
                 success: false,
-                message: error.message
+                message: error.message || 'Credenciales inválidas'
             });
         }
     };
@@ -97,7 +100,7 @@ class AuthController {
                 contrasena,
                 nombre,
                 direccion: direccion || null,
-                id_tipo
+                id_tipo: parseInt(id_tipo) // Asegurar que sea número entero
             });
 
             // 4. Respuesta exitosa (excluyendo contraseña)
@@ -110,10 +113,14 @@ class AuthController {
             });
 
         } catch (error) {
-            console.error('Error al registrar:', error.message);
+            // ✅ Logging detallado para diagnóstico
+            console.error('❌ ERROR DETALLADO AL REGISTRAR:', error);
+            console.error('❌ Mensaje:', error.message);
+            console.error('❌ Stack:', error.stack);
+            
             res.status(400).json({
                 success: false,
-                message: error.message
+                message: error.message || 'Error al registrar'
             });
         }
     };
@@ -129,6 +136,7 @@ class AuthController {
                 data: req.usuario
             });
         } catch (error) {
+            console.error('Error al obtener perfil:', error);
             res.status(500).json({
                 success: false,
                 message: 'Error al obtener el perfil'
