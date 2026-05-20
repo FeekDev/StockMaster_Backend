@@ -9,9 +9,15 @@
  * - ../models/usuario.models: Modelo Persona para acceder a la BD.
  */
 
+<<<<<<< HEAD
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const Usuario = require('../models/usuario.models');
+=======
+
+// URL base del backend (Asegúrate de que coincida con donde corre tu compañero)
+const API_URL = 'http://localhost:3000/api';
+>>>>>>> a7d0a9d9409b23b6841b4bb442147868f73a6d19
 
 class AuthService {
 
@@ -98,5 +104,8 @@ class AuthService {
     }
 }
 
+<<<<<<< HEAD
 // Exportamos una instancia única (Singleton)
+=======
+>>>>>>> a7d0a9d9409b23b6841b4bb442147868f73a6d19
 module.exports = new AuthService();

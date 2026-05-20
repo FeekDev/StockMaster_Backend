@@ -14,7 +14,7 @@ const express = require('express');
 const router = express.Router();
 
 // Importamos el controlador
-const authController = require('../controller/auth.controllers');
+const authController = require('../controller/auth.controller');
 
 // Importamos el middleware de seguridad
 const { verificarToken } = require('../middleware/auth.middleware');
