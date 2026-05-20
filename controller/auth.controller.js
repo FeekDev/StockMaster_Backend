@@ -1,6 +1,6 @@
 /**
  * Controlador de Autenticación (Auth Controller)
- * Ubicación: controller/auth.controllers.js
+ * Ubicación: controller/auth.controller.js
  * Descripción: Maneja las peticiones HTTP relacionadas con login y registro.
  * Valida los datos de entrada y coordina la respuesta usando el servicio de autenticación.
  * 
@@ -57,10 +57,11 @@ class AuthController {
             });
 
         } catch (error) {
-            console.error('Error en login:', error.message);
+            console.error('❌ ERROR EN LOGIN:', error.message);
+            
             res.status(401).json({
                 success: false,
-                message: error.message
+                message: error.message || 'Credenciales inválidas'
             });
         }
     };
@@ -97,7 +98,7 @@ class AuthController {
                 contrasena,
                 nombre,
                 direccion: direccion || null,
-                id_tipo
+                id_tipo: parseInt(id_tipo)
             });
 
             // 4. Respuesta exitosa (excluyendo contraseña)
@@ -110,10 +111,21 @@ class AuthController {
             });
 
         } catch (error) {
-            console.error('Error al registrar:', error.message);
+            // ✅ LOGGING DETALLADO PARA VER EL ERROR REAL DE SEQUELIZE
+            console.error('========================================');
+            console.error('❌ ERROR COMPLETO DE REGISTRO:');
+            console.error('========================================');
+            console.error('• Error name:', error.name);
+            console.error('• Error message:', error.message);
+            console.error('• Error original:', error.original?.message);
+            console.error('• Error parent:', error.parent?.message);
+            console.error('• Error errors:', JSON.stringify(error.errors, null, 2));
+            console.error('• Error stack:', error.stack);
+            console.error('========================================');
+            
             res.status(400).json({
                 success: false,
-                message: error.message
+                message: error.original?.message || error.message || 'Error al registrar'
             });
         }
     };
@@ -123,12 +135,12 @@ class AuthController {
      */
     obtenerPerfil = async (req, res) => {
         try {
-            // req.usuario ya fue inyectado por el middleware
             res.json({
                 success: true,
                 data: req.usuario
             });
         } catch (error) {
+            console.error('Error al obtener perfil:', error);
             res.status(500).json({
                 success: false,
                 message: 'Error al obtener el perfil'
@@ -137,5 +149,4 @@ class AuthController {
     };
 }
 
-// Exportamos una instancia del controlador
 module.exports = new AuthController();
