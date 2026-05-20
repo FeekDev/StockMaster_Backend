@@ -1,96 +1,102 @@
 /**
- * Servicio de Autenticación para el Frontend
- * Ubicación: src/services/auth.service.js
- * Descripción: Gestiona la comunicación con los endpoints de autenticación.
- * Adapta los nombres de los campos para que coincidan con la tabla 'Persona'.
+ * Servicio de Autenticación (Auth Service)
+ * Ubicación: services/auth.services.js
+ * Descripción: Encapsula la lógica de negocio para la autenticación.
+ * 
+ * Dependencias:
+ * - jsonwebtoken: Para crear y validar tokens JWT.
+ * - bcryptjs: Para encriptar/validar contraseñas.
+ * - ../models/usuario.models: Modelo Persona para acceder a la BD.
  */
 
-import axios from 'axios';
-
-// URL base del backend (Asegúrate de que coincida con donde corre tu compañero)
-const API_URL = 'http://localhost:3000/api';
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const Usuario = require('../models/usuario.models');
 
 class AuthService {
-    
+
     /**
-     * Iniciar sesión (Login)
-     * Envía 'usuario' y 'contrasena' para coincidir con la BD
+     * Genera un token JWT firmado con la clave secreta del entorno.
+     */
+    generarToken(persona) {
+        const payload = {
+            id_persona: persona.id_persona,
+            usuario: persona.usuario,
+            id_tipo: persona.id_tipo || 2
+        };
+
+        return jwt.sign(payload, process.env.JWT_SECRET, {
+            expiresIn: '24h'
+        });
+    }
+
+    /**
+     * Lógica principal de Login.
      */
     async login(usuario, contrasena) {
+        // Buscar incluyendo la contraseña (usando el scope)
+        const persona = await Usuario.scope('conContrasena').findOne({
+            where: { usuario: usuario }
+        });
+
+        if (!persona) {
+            throw new Error('Credenciales inválidas');
+        }
+
+        // Verificar contraseña
+        const esValida = await persona.validarContrasena(contrasena);
+        if (!esValida) {
+            throw new Error('Credenciales inválidas');
+        }
+
+        // Generar token
+        const token = this.generarToken(persona);
+
+        // Excluir contraseña de la respuesta
+        const { contrasena: _, ...personaData } = persona.toJSON();
+
+        return {
+            token: token,
+            usuario: personaData
+        };
+    }
+
+    /**
+     * Registra un nuevo usuario en la tabla Persona
+     * ⚠️ IMPORTANTE: NO hacemos try-catch aquí para que los errores de Sequelize
+     * (clave foránea, único, etc.) se propaguen completos al controlador.
+     */
+    async registrarPersona(datosPersona) {
+        // 1. Verificar si el usuario ya existe
+        const personaExistente = await Usuario.findOne({ 
+            where: { usuario: datosPersona.usuario } 
+        });
+        
+        if (personaExistente) {
+            // ✅ Usar new Error() para que tenga stack trace
+            throw new Error('El nombre de usuario ya está en uso');
+        }
+
+        // 2. Crear la persona
+        // Si hay error de BD (clave foránea, validación, etc.), Sequelize lo lanzará
+        // y llegará completo al controlador
+        const nuevaPersona = await Usuario.create(datosPersona);
+        
+        return nuevaPersona; 
+    }
+
+    /**
+     * Verifica si un token JWT es válido y no ha expirado.
+     */
+    verificarToken(token) {
         try {
-            const response = await axios.post(`${API_URL}/auth/login`, {
-                usuario,       // 👈 Antes era username
-                contrasena     // 👈 Antes era password
-            });
-
-            if (response.data.success) {
-                localStorage.setItem('user', JSON.stringify(response.data.data.usuario));
-                localStorage.setItem('token', response.data.data.token);
-            }
-
-            return response.data;
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            return decoded;
         } catch (error) {
-            throw error.response?.data || { message: 'Error de conexión con el servidor' };
+            throw new Error('Token inválido o expirado');
         }
-    }
-
-    /**
-     * Registrar nuevo usuario (Register)
-     * Envía los campos necesarios para la tabla Persona
-     */
-    async register(data) {
-        try {
-            // Adaptamos los nombres de los campos para la petición
-            const payload = {
-                usuario: data.usuario,      // 👈 Antes era username
-                contrasena: data.contrasena,// 👈 Antes era password
-                nombre: data.nombre,
-                direccion: data.direccion,
-                id_tipo: data.id_tipo       // 👈 ID del tipo de persona (ej: 1, 2, 3)
-            };
-
-            const response = await axios.post(`${API_URL}/auth/register`, payload);
-            
-            return response.data;
-        } catch (error) {
-            throw error.response?.data || { message: 'Error al registrar' };
-        }
-    }
-
-    /**
-     * Cerrar sesión
-     */
-    logout() {
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
-        window.location.href = '/login';
-    }
-
-    /**
-     * Obtener usuario actual
-     */
-    getCurrentUser() {
-        const userStr = localStorage.getItem('user');
-        return userStr ? JSON.parse(userStr) : null;
-    }
-
-    /**
-     * Obtener token actual
-     */
-    getToken() {
-        return localStorage.getItem('token');
-    }
-
-    /**
-     * Header de autorización
-     */
-    authHeader() {
-        const token = this.getToken();
-        if (token) {
-            return { Authorization: `Bearer ${token}` };
-        }
-        return {};
     }
 }
 
-export default new AuthService();
+// Exportamos una instancia única (Singleton)
+module.exports = new AuthService();
