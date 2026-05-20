@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const sequelize = require('./config/database');
 
+
 // Importar modelos
 const Persona = require('./models/persona.models');
 const TipoPersona = require('./models/tipoPersona.models');
@@ -12,6 +13,7 @@ const Categoria = require('./models/categoria.models');
 const DetalleFactura = require('./models/detalleFactura.models');
 
 // Importar rutas
+const authRoutes = require('./routes/auth.routes');
 const personaRoutes = require('./routes/persona.routes');
 const tipoPersonaRoutes = require('./routes/tipoPersona.routes');
 const articuloRoutes = require('./routes/articulo.routes');
@@ -19,8 +21,9 @@ const categoriaRoutes = require('./routes/categoria.routes');
 const detalleFacturaRoutes = require('./routes/detalleFactura.routes');
 const ventaRoutes = require('./routes/venta.routes');
 const { errorMiddleware } = require('./middleware/error.middleware');
-const cors = require('cors');
 
+// Configurar CORS para permitir todas las solicitudes desde el frontend
+const cors = require('cors');
 app.use(cors());
 
 
@@ -39,6 +42,7 @@ app.get('/health', async (req, res) => {
 });
 
 // Usar rutas
+app.use('/auth', authRoutes);
 app.use('/personas', personaRoutes);
 app.use('/tiposPersona', tipoPersonaRoutes);
 app.use('/articulos', articuloRoutes);
