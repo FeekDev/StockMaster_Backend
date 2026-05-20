@@ -1,24 +1,22 @@
 /**
  * Rutas de Autenticación (Auth Routes)
  * Ubicación: routes/auth.routes.js
- * Descripción: Define los endpoints públicos y privados para la autenticación.
+ * Descripción: Define los endpoints públicos y privados para autenticación.
  * 
- * Este archivo actúa como el puente entre la petición HTTP y la lógica del Controlador.
- * Aquí se determina qué ruta es accesible libremente y cuál requiere un Token válido.
- * 
- * Endpoints definidos:
- * - POST   /login          -> Ingreso de credenciales (Público).
- * - GET    /me             -> Obtiene datos del usuario actual (Privado, requiere Token).
- * - GET    /verificar      -> Valida si el token actual sigue siendo válido (Privado, requiere Token).
+ * Endpoints:
+ * - POST /login     -> Inicio de sesión (Público)
+ * - POST /register  -> Registro de nuevo usuario (Público)
+ * - GET  /me        -> Obtener perfil del usuario (Privado, requiere Token)
+ * - GET  /verificar -> Validar token vigente (Privado, requiere Token)
  */
 
 const express = require('express');
 const router = express.Router();
 
-// Importamos el controlador que tiene la lógica de negocio
-const authController = require('../controller/auth.controller');
+// Importamos el controlador
+const authController = require('../controller/auth.controllers');
 
-// Importamos el middleware de seguridad (El guardia que revisa el token)
+// Importamos el middleware de seguridad
 const { verificarToken } = require('../middleware/auth.middleware');
 
 // ============================================================================
@@ -27,12 +25,15 @@ const { verificarToken } = require('../middleware/auth.middleware');
 
 /**
  * POST /api/auth/login
- * Procesa el inicio de sesión.
- * Orden de ejecución:
- * 1. authController.loginValidaciones: Verifica que username y password existan y tengan formato correcto.
- * 2. authController.login: Si pasa la validación, ejecuta el login contra la base de datos.
+ * Procesa el inicio de sesión
  */
 router.post('/login', authController.loginValidaciones, authController.login);
+
+/**
+ * POST /api/auth/register
+ * Registra un nuevo usuario en la tabla Persona
+ */
+router.post('/register', authController.loginValidaciones, authController.register);
 
 // ============================================================================
 // RUTAS PRIVADAS (Requieren Token JWT válido)
@@ -40,17 +41,13 @@ router.post('/login', authController.loginValidaciones, authController.login);
 
 /**
  * GET /api/auth/me
- * Obtiene el perfil del usuario que está logueado.
- * Orden de ejecución:
- * 1. verificarToken: Primero pasa por el guardia. Si no hay token o es inválido, bloquea el acceso (401).
- * 2. authController.obtenerPerfil: Si el token es válido, devuelve los datos del usuario (inyectados en req.usuario).
+ * Obtiene el perfil del usuario logueado
  */
 router.get('/me', verificarToken, authController.obtenerPerfil);
 
 /**
  * GET /api/auth/verificar
- * Endpoint utilitario para que el Frontend pregunte: "¿Sigo logueado?".
- * Si llega aquí, significa que el token sigue vigente.
+ * Endpoint utilitario para validar si el token sigue vigente
  */
 router.get('/verificar', verificarToken, (req, res) => {
     res.json({
@@ -60,5 +57,5 @@ router.get('/verificar', verificarToken, (req, res) => {
     });
 });
 
-// Exportamos el router para ser conectado en el archivo principal (app.js)
+// Exportamos el router
 module.exports = router;

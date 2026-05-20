@@ -1,109 +1,68 @@
-/**
- * Modelo de Usuario - Gestión de autenticación y control de accesos
- * Ubicación: models/usuario.models.js
- * Descripción: Define el esquema de la tabla 'Usuarios' en la base de datos MSSQL.
- * Gestiona credenciales, roles y estados de cuenta. Las contraseñas se almacenan
- * hasheadas utilizando bcrypt para garantizar la seguridad de la información.
- */
-
 const { DataTypes } = require('sequelize');
 const bcrypt = require('bcryptjs');
 const sequelize = require('../config/database');
 
-const Usuario = sequelize.define('Usuario', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false,
-        comment: 'Identificador único del usuario'
-    },
-    username: {
-        type: DataTypes.STRING(50),
-        allowNull: false,
-        unique: true,
-        validate: {
-            notEmpty: { msg: 'El nombre de usuario es obligatorio' },
-            len: { args: [3, 50], msg: 'Debe tener entre 3 y 50 caracteres' }
-        },
-        comment: 'Nombre de usuario para inicio de sesión'
-    },
-    password: {
-        type: DataTypes.STRING(255),
-        allowNull: false,
-        validate: {
-            notEmpty: { msg: 'La contraseña es obligatoria' },
-            len: { args: [6, 255], msg: 'Debe tener al menos 6 caracteres' }
-        },
-        comment: 'Contraseña hasheada con bcrypt'
-    },
-    email: {
-        type: DataTypes.STRING(100),
-        allowNull: false,
-        unique: true,
-        validate: { isEmail: { msg: 'Formato de correo inválido' } },
-        comment: 'Correo electrónico institucional o personal'
-    },
-    nombre: {
-        type: DataTypes.STRING(100),
-        allowNull: false,
-        validate: { notEmpty: { msg: 'El nombre completo es obligatorio' } },
-        comment: 'Nombre completo del usuario para visualización'
-    },
-    activo: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true,
-        comment: 'Estado de la cuenta (Activo/Inactivo)'
-    },
-    rol: {
-        type: DataTypes.ENUM('admin', 'vendedor', 'almacen'),
-        defaultValue: 'vendedor',
-        allowNull: false,
-        comment: 'Rol asignado para control de permisos'
-    }
+const Usuario = sequelize.define('Persona', {
+  id_persona: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+    allowNull: false
+  },
+  usuario: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+    unique: true,
+    validate: { notEmpty: { msg: 'El usuario es requerido' } }
+  },
+  contrasena: {
+    type: DataTypes.STRING(255),
+    allowNull: false,
+    validate: { notEmpty: { msg: 'La contraseña es requerida' } }
+  },
+  nombre: {
+    type: DataTypes.STRING(100),
+    allowNull: false
+  },
+  direccion: {
+    type: DataTypes.STRING(255),
+    allowNull: true
+  },
+  id_tipo: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  }
 }, {
-    tableName: 'Usuarios',
-    freezeTableName: true,
-    timestamps: true,
-    underscored: false,
-    defaultScope: {
-        attributes: { exclude: ['password'] }
-    },
-    scopes: {
-        conPassword: { attributes: {} }
-    },
-    comment: 'Tabla principal para gestión de autenticación y perfiles'
+  tableName: 'Persona',
+  freezeTableName: true,
+  timestamps: false, // Tu tabla no tiene campos de auditoría
+  defaultScope: {
+    attributes: { exclude: ['contrasena'] }
+  },
+  scopes: {
+    conContrasena: { attributes: {} }
+  }
 });
 
-/**
- * Método de instancia para comparar contraseñas
- * @param {string} passwordPlano - Contraseña proporcionada por el usuario
- * @returns {Promise<boolean>} Resultado de la comparación
- */
-Usuario.prototype.validarPassword = async function(passwordPlano) {
-    return await bcrypt.compare(passwordPlano, this.password);
+// Método para comparar contraseñas
+Usuario.prototype.validarContrasena = async function(passwordPlano) {
+  return await bcrypt.compare(passwordPlano, this.contrasena);
 };
 
-/**
- * Hook: beforeCreate
- * Hashea la contraseña automáticamente antes de insertar un nuevo registro
- */
+// Encriptar antes de crear
 Usuario.addHook('beforeCreate', async (usuario) => {
-    if (usuario.password) {
-        const salt = await bcrypt.genSalt(10);
-        usuario.password = await bcrypt.hash(usuario.password, salt);
-    }
+  if (usuario.contrasena) {
+    const salt = await bcrypt.genSalt(10);
+    usuario.contrasena = await bcrypt.hash(usuario.contrasena, salt);
+  }
 });
 
-/**
- * Hook: beforeUpdate
- * Hashea la contraseña únicamente si se detecta una modificación en el campo
- */
+// Encriptar antes de actualizar (solo si cambió)
 Usuario.addHook('beforeUpdate', async (usuario) => {
-    if (usuario.password && usuario.changed('password')) {
-        const salt = await bcrypt.genSalt(10);
-        usuario.password = await bcrypt.hash(usuario.password, salt);
-    }
+  if (usuario.contrasena && usuario.changed('contrasena')) {
+    const salt = await bcrypt.genSalt(10);
+    usuario.contrasena = await bcrypt.hash(usuario.contrasena, salt);
+  }
 });
 
 module.exports = Usuario;
