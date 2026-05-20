@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors'); // ← NUEVO: Importar CORS
 const app = express();
 const sequelize = require('./config/database')
 
@@ -13,6 +14,16 @@ const Venta = require('./models/venta.models');
 const Usuario = require('./models/usuario.models');
 
 app.use(express.json());
+
+// ============================================
+// MIDDLEWARE CORS - NUEVO (para permitir frontend)
+// ============================================
+app.use(cors({
+    origin: 'http://localhost:5173', // Permite peticiones desde tu frontend (Vite)
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Health check endpoint
 app.get('/health', async (req, res) => {
