@@ -5,7 +5,6 @@
  * Adapta los nombres de los campos para que coincidan con la tabla 'Persona'.
  */
 
-import axios from 'axios';
 
 // URL base del backend (Asegúrate de que coincida con donde corre tu compañero)
 const API_URL = 'http://localhost:3000/api';
@@ -93,4 +92,4 @@ class AuthService {
     }
 }
 
-export default new AuthService();
+module.exports = new AuthService();

@@ -92,7 +92,7 @@ class AuthController {
             }
 
             // 3. Llamar al servicio para registrar
-            const nuevaPersona = await authService.registrarPersona({
+            const nuevaPersona = await authService.register({
                 usuario,
                 contrasena,
                 nombre,
