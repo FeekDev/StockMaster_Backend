@@ -13,6 +13,7 @@ const Categoria = require('./models/categoria.models');
 const DetalleFactura = require('./models/detalleFactura.models');
 
 // Importar rutas
+const authRoutes = require('./routes/auth.routes');
 const personaRoutes = require('./routes/persona.routes');
 const tipoPersonaRoutes = require('./routes/tipoPersona.routes');
 const articuloRoutes = require('./routes/articulo.routes');
@@ -41,6 +42,7 @@ app.get('/health', async (req, res) => {
 });
 
 // Usar rutas
+app.use('/auth', authRoutes);
 app.use('/personas', personaRoutes);
 app.use('/tiposPersona', tipoPersonaRoutes);
 app.use('/articulos', articuloRoutes);
