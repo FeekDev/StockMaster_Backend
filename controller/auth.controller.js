@@ -57,9 +57,7 @@ class AuthController {
             });
 
         } catch (error) {
-            // ✅ Logging detallado para diagnóstico
-            console.error('❌ ERROR EN LOGIN:', error);
-            console.error('❌ Mensaje:', error.message);
+            console.error('❌ ERROR EN LOGIN:', error.message);
             
             res.status(401).json({
                 success: false,
@@ -100,7 +98,7 @@ class AuthController {
                 contrasena,
                 nombre,
                 direccion: direccion || null,
-                id_tipo: parseInt(id_tipo) // Asegurar que sea número entero
+                id_tipo: parseInt(id_tipo)
             });
 
             // 4. Respuesta exitosa (excluyendo contraseña)
@@ -113,14 +111,21 @@ class AuthController {
             });
 
         } catch (error) {
-            // ✅ Logging detallado para diagnóstico
-            console.error('❌ ERROR DETALLADO AL REGISTRAR:', error);
-            console.error('❌ Mensaje:', error.message);
-            console.error('❌ Stack:', error.stack);
+            // ✅ LOGGING DETALLADO PARA VER EL ERROR REAL DE SEQUELIZE
+            console.error('========================================');
+            console.error('❌ ERROR COMPLETO DE REGISTRO:');
+            console.error('========================================');
+            console.error('• Error name:', error.name);
+            console.error('• Error message:', error.message);
+            console.error('• Error original:', error.original?.message);
+            console.error('• Error parent:', error.parent?.message);
+            console.error('• Error errors:', JSON.stringify(error.errors, null, 2));
+            console.error('• Error stack:', error.stack);
+            console.error('========================================');
             
             res.status(400).json({
                 success: false,
-                message: error.message || 'Error al registrar'
+                message: error.original?.message || error.message || 'Error al registrar'
             });
         }
     };
@@ -130,7 +135,6 @@ class AuthController {
      */
     obtenerPerfil = async (req, res) => {
         try {
-            // req.usuario ya fue inyectado por el middleware
             res.json({
                 success: true,
                 data: req.usuario
@@ -145,5 +149,4 @@ class AuthController {
     };
 }
 
-// Exportamos una instancia del controlador
 module.exports = new AuthController();
