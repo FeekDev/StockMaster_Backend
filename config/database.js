@@ -5,7 +5,7 @@ const DB_TYPE = process.env.DB_TYPE
 // Inicialización sequelize
 let sequelize
 // Conexión a bd
-sequelize = new Sequelize('STOCKMASTERbdv4', 'sa', 'Yeffer1234', {
+sequelize = new Sequelize('STOCKMASTERbdv4', 'sa', 'SQLS3rv3r*', {
     host: 'localhost',
     dialect: 'mssql',
     dialectOptions: {
